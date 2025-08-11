@@ -1,0 +1,82 @@
+{
+  "lastUpdated": "2025-08-11T12:50:38.011Z",
+  "quarters": {
+    "2025-Q3": [
+      {
+        "id": 1,
+        "name": "Ahmed El-Taher",
+        "job": "Organizer",
+        "points": 150,
+        "profileImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        "githubUrl": "https://github.com/ahmed-taher",
+        "linkedinUrl": "https://linkedin.com/in/ahmed-taher",
+        "achievements": [
+          "organizer",
+          "learner",
+          "connector"
+        ],
+        "fellowship": "gold"
+      },
+      {
+        "id": 2,
+        "name": "Sara Mohamed",
+        "job": "QML Researcher",
+        "points": 120,
+        "profileImage": "https://images.unsplash.com/photo-1494790108755-2616b612b976?w=150&h=150&fit=crop&crop=face",
+        "githubUrl": "https://github.com/sara-mohamed",
+        "linkedinUrl": null,
+        "achievements": [
+          "learner",
+          "innovator"
+        ],
+        "fellowship": "silver"
+      },
+      {
+        "id": 3,
+        "name": "Omar Hassan",
+        "job": "Student",
+        "points": 100,
+        "profileImage": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        "githubUrl": null,
+        "linkedinUrl": "https://linkedin.com/in/omar-hassan",
+        "achievements": [
+          "learner",
+          "connector"
+        ],
+        "fellowship": "bronze"
+      }
+    ],
+    "2025-Q4": [],
+    "2026-Q1": [],
+    "2026-Q2": [],
+    "2026-Q3": [],
+    "2026-Q4": [],
+    "2027-Q1": [],
+    "2027-Q2": [],
+    "2027-Q3": [],
+    "2027-Q4": []
+  },
+  "achievements": {
+    "organizer": {
+      "icon": "🎯",
+      "title": "Event Organizer"
+    },
+    "learner": {
+      "icon": "📚",
+      "title": "Dedicated Learner"
+    },
+    "connector": {
+      "icon": "🤝",
+      "title": "Community Connector"
+    },
+    "innovator": {
+      "icon": "💡",
+      "title": "Innovation Catalyst"
+    }
+  },
+  "currentQuarter": "2025-Q3",
+  "githubConfig": {
+    "owner": "Ahmed-G-ElTaher",
+    "repo": "EgyQu-Community-leaderboard"
+  }
+}
