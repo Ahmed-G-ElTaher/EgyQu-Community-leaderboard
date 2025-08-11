@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2025-08-11T12:50:38.011Z",
+  "lastUpdated": "2025-08-11T12:50:59.023Z",
   "quarters": {
     "2025-Q3": [
       {
         "id": 1,
         "name": "Ahmed El-Taher",
         "job": "Organizer",
-        "points": 150,
+        "points": 160,
         "profileImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         "githubUrl": "https://github.com/ahmed-taher",
         "linkedinUrl": "https://linkedin.com/in/ahmed-taher",
@@ -15,7 +15,7 @@
           "learner",
           "connector"
         ],
-        "fellowship": "gold"
+        "fellowship": "silver"
       },
       {
         "id": 2,
