@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-08-11T12:52:08.022Z",
+  "lastUpdated": "2025-08-11T12:52:17.899Z",
   "quarters": {
     "2025-Q3": [
       {
@@ -44,6 +44,17 @@
           "connector"
         ],
         "fellowship": "bronze"
+      },
+      {
+        "id": 1754916737898,
+        "name": "Ahmed El-Taher",
+        "job": "Enthusiastic Data Science master’s student with background studies in Statistics.",
+        "points": 0,
+        "profileImage": "https://avatars.githubusercontent.com/u/124341899?v=4",
+        "githubUrl": "https://github.com/Ahmed-G-ElTaher",
+        "linkedinUrl": null,
+        "achievements": [],
+        "fellowship": "none"
       }
     ],
     "2025-Q4": [],
