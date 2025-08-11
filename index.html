@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Community Egypt - Leaderboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f7f5f3 0%, #ede7e0 25%, #e8e2db 50%, #ddd5cc 75%, #d2c7ba 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(108, 108, 108, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 125, 107, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c2c2c;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #333, #555, #777);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            color: #5a5a5a;
+        }
+
+        .quarter-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .quarter-tab {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #444;
+            border: 2px solid rgba(100, 100, 100, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quarter-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 125, 107, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .quarter-tab:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #222;
+        }
+
+        .quarter-tab:hover::before {
+            left: 100%;
+        }
+
+        .quarter-tab.active {
+            background: linear-gradient(45deg, #8b7d6b, #a69080);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 125, 107, 0.3);
+            border-color: #8b7d6b;
+        }
+
+        .quarter-section {
+            display: none;
+            margin-bottom: 50px;
+        }
+
+        .quarter-section.active {
+            display: block;
+        }
+
+        .quarter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c2c2c;
+        }
+
+        .quarter-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #444, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .quarter-subtitle {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            color: #5a5a5a;
+        }
+
+        .leaderboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .member-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(139, 125, 107, 0.2);
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(139, 125, 107, 0.05) 0%, 
+                rgba(210, 199, 186, 0.05) 50%, 
+                rgba(232, 226, 219, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.15),
+                0 0 20px rgba(139, 125, 107, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-color: rgba(139, 125, 107, 0.4);
+        }
+
+        .member-card:hover::before {
+            opacity: 1;
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid rgba(139, 125, 107, 0.3);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info h3 {
+            font-size: 1.2rem;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .profile-info h3 a {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .profile-info h3 a:hover {
+            color: #8b7d6b;
+            text-shadow: 0 0 8px rgba(139, 125, 107, 0.3);
+        }
+
+        .profile-info .job {
+            color: #6a6a6a;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .social-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid rgba(139, 125, 107, 0.3);
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(139, 125, 107, 0.3);
+        }
+
+        .social-icon.github {
+            background: linear-gradient(45deg, #444, #666);
+            color: white;
+        }
+
+        .social-icon.linkedin {
+            background: linear-gradient(45deg, #0077b5, #005885);
+            color: white;
+        }
+
+        .points-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .points-display {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+
+        .points-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #8b7d6b;
+            text-shadow: 0 0 8px rgba(139, 125, 107, 0.2);
+        }
+
+        .points-text {
+            color: #6a6a6a;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .fellowship-badge {
+            background: linear-gradient(45deg, #d4af37, #f1c40f);
+            color: #333;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .fellowship-badge::before {
+            content: '⭐';
+            font-size: 0.8rem;
+        }
+
+        .fellowship-badge.silver {
+            background: linear-gradient(45deg, #c0c0c0, #e8e8e8);
+            box-shadow: 0 0 10px rgba(192, 192, 192, 0.2);
+        }
+
+        .fellowship-badge.silver::before {
+            content: '🥈';
+        }
+
+        .fellowship-badge.bronze {
+            background: linear-gradient(45deg, #cd7f32, #deb887);
+            color: white;
+            box-shadow: 0 0 10px rgba(205, 127, 50, 0.2);
+        }
+
+        .fellowship-badge.bronze::before {
+            content: '🥉';
+        }
+
+        .fellowship-badge.none {
+            background: linear-gradient(45deg, rgba(139, 125, 107, 0.3), rgba(210, 199, 186, 0.3));
+            color: #444;
+            box-shadow: 0 0 8px rgba(139, 125, 107, 0.1);
+        }
+
+        .fellowship-badge.none::before {
+            content: '👤';
+        }
+
+        .achievements {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .achievement-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(139, 125, 107, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .achievement-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(139, 125, 107, 0.2);
+        }
+
+        .achievement-icon.organizer {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border-color: #e74c3c;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.2);
+        }
+
+        .achievement-icon.learner {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        }
+
+        .achievement-icon.connector {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+            border-color: #27ae60;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
+        }
+
+        .achievement-icon.innovator {
+            background: linear-gradient(45deg, #f39c12, #d68910);
+            color: white;
+            border-color: #f39c12;
+            box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #5a5a5a;
+            padding: 60px 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            color: #444;
+        }
+
+        .empty-state p {
+            opacity: 0.6;
+            color: #6a6a6a;
+        }
+
+        .footer {
+            text-align: center;
+            color: #5a5a5a;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #444;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            white-space: nowrap;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+            color: white;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #5a5a5a;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #444;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            white-space: nowrap;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .achievement-icon:hover .tooltip {
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .leaderboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .leaderboard-grid {
+                grid-template-columns: 1fr;
+                padding: 20px 15px;
+                gap: 20px;
+            }
+            
+            .member-card {
+                aspect-ratio: auto;
+                min-height: 280px;
+            }
+            
+            .quarter-navigation {
+                gap: 10px;
+            }
+            
+            .quarter-tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">Quantum Community Egypt</h1>
+            <p class="subtitle">Fellowship Leaderboard System</p>
+        </div>
+
+        <div class="quarter-navigation" id="quarterNavigation">
+            <!-- Quarter tabs will be generated here -->
+        </div>
+
+        <div id="quartersContainer">
+            <!-- Quarter sections will be generated here -->
+        </div>
+
+        <div class="footer">
+            <p>🚀 Building the Future of Quantum Computing in Egypt</p>
+            <p>© 2025 Quantum Computing Community Egypt</p>
+        </div>
+    </div>
+
+    <script>
+        // Achievement definitions
+        const achievementIcons = {
+            organizer: { icon: "🎯", title: "Event Organizer" },
+            learner: { icon: "📚", title: "Dedicated Learner" },
+            connector: { icon: "🤝", title: "Community Connector" },
+            innovator: { icon: "💡", title: "Innovation Catalyst" }
+        };
+
+        // Data will be loaded from JSON file
+        let quarterlyData = {};
+        let currentQuarter = '2025-Q3';
+        let lastDataUpdate = null;
+
+        function getCurrentQuarter() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            
+            // Default to Q3 2025 as the starting quarter
+            if (year < 2025 || (year === 2025 && month < 7)) {
+                return '2025-Q3';
+            }
+            
+            let quarter;
+            if (month <= 3) quarter = 'Q1';
+            else if (month <= 6) quarter = 'Q2';
+            else if (month <= 9) quarter = 'Q3';
+            else quarter = 'Q4';
+            
+            return `${year}-${quarter}`;
+        }
+
+        function generateQuarters() {
+            const quarters = [];
+            const currentYear = new Date().getFullYear();
+            
+            // Start from Q3 2025 and generate future quarters
+            quarters.push('2025-Q3', '2025-Q4');
+            
+            // Generate quarters for next 2 years
+            for (let year = currentYear + 1; year <= currentYear + 2; year++) {
+                quarters.push(`${year}-Q1`, `${year}-Q2`, `${year}-Q3`, `${year}-Q4`);
+            }
+            
+            return quarters;
+        }
+
+        function initializeQuarters() {
+            const quarters = generateQuarters();
+            
+            quarters.forEach(quarter => {
+                if (!quarterlyData[quarter]) {
+                    quarterlyData[quarter] = [];
+                }
+            });
+        }
+
+        function getFellowshipBadge(fellowship) {
+            const badges = {
+                gold: "Gold Fellow",
+                silver: "Silver Fellow", 
+                bronze: "Bronze Fellow",
+                none: "Member"
+            };
+            return badges[fellowship] || "Member";
+        }
+
+        function createMemberCard(member, rank) {
+            const nameElement = member.githubUrl 
+                ? `<a href="${member.githubUrl}" target="_blank" rel="noopener">${member.name}</a>`
+                : member.name;
+
+            const socialLinks = [];
+            if (member.githubUrl) {
+                socialLinks.push(`<a href="${member.githubUrl}" target="_blank" rel="noopener" class="social-icon github" title="GitHub Profile">⚡</a>`);
+            }
+            if (member.linkedinUrl) {
+                socialLinks.push(`<a href="${member.linkedinUrl}" target="_blank" rel="noopener" class="social-icon linkedin" title="LinkedIn Profile">💼</a>`);
+            }
+
+            return `
+                <div class="member-card">
+                    <div class="profile-section">
+                        <img src="${member.profileImage}" alt="${member.name}" class="profile-image">
+                        <div class="profile-info">
+                            <h3>${nameElement}</h3>
+                            <div class="job">${member.job}</div>
+                            ${socialLinks.length > 0 ? `<div class="social-links">${socialLinks.join('')}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="points-section">
+                        <div class="points-display">
+                            <span class="points-number">${member.points}</span>
+                            <span class="points-text">pts</span>
+                        </div>
+                        <div class="fellowship-badge ${member.fellowship}">
+                            ${getFellowshipBadge(member.fellowship)}
+                        </div>
+                    </div>
+                    
+                    <div class="achievements">
+                        ${member.achievements.map(achievement => `
+                            <div class="achievement-icon ${achievement}">
+                                ${achievementIcons[achievement]?.icon || '🏆'}
+                                <div class="tooltip">${achievementIcons[achievement]?.title || achievement}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createQuarterNavigation() {
+            const quarters = Object.keys(quarterlyData).sort().reverse(); // Most recent first
+            const navContainer = document.getElementById('quarterNavigation');
+            
+            navContainer.innerHTML = quarters.map(quarter => {
+                const isActive = quarter === currentQuarter ? 'active' : '';
+                return `<div class="quarter-tab ${isActive}" onclick="switchQuarter('${quarter}')">${quarter}</div>`;
+            }).join('');
+        }
+
+        function createQuarterSections() {
+            const quarters = Object.keys(quarterlyData).sort().reverse();
+            const container = document.getElementById('quartersContainer');
+            
+            container.innerHTML = quarters.map(quarter => {
+                const isActive = quarter === currentQuarter ? 'active' : '';
+                const members = quarterlyData[quarter] || [];
+                const sortedMembers = [...members].sort((a, b) => b.points - a.points);
+                
+                return `
+                    <div class="quarter-section ${isActive}" id="quarter-${quarter}">
+                        <div class="quarter-header">
+                            <h2 class="quarter-title">${quarter}</h2>
+                            <p class="quarter-subtitle">${sortedMembers.length} Active Members</p>
+                        </div>
+                        <div class="leaderboard-grid">
+                            ${sortedMembers.length > 0 
+                                ? sortedMembers.map((member, index) => createMemberCard(member, index + 1)).join('') 
+                                : `<div class="empty-state">
+                                     <h3>No members yet for ${quarter}</h3>
+                                     <p>Members will appear here once they start earning points</p>
+                                   </div>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchQuarter(quarter) {
+            // Update active tab
+            document.querySelectorAll('.quarter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update active section
+            document.querySelectorAll('.quarter-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`quarter-${quarter}`).classList.add('active');
+            
+            currentQuarter = quarter;
+        }
+
+        // Function to load data from JSON file
+        async function loadDataFromJSON() {
+            try {
+                const response = await fetch('./quantum-data.json?t=' + Date.now()); // Cache busting
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.quarters) {
+                        quarterlyData = data.quarters;
+                    }
+                    if (data.achievements) {
+                        Object.assign(achievementIcons, data.achievements);
+                    }
+                    if (data.currentQuarter) {
+                        currentQuarter = data.currentQuarter;
+                    }
+                    if (data.lastUpdated) {
+                        lastDataUpdate = new Date(data.lastUpdated);
+                        updateLastUpdateInfo();
+                    }
+                    
+                    // Initialize any missing quarters
+                    initializeQuarters();
+                    
+                    // Update the interface
+                    createQuarterNavigation();
+                    createQuarterSections();
+                    
+                    console.log('Data loaded from JSON successfully');
+                    return true;
+                } else {
+                    console.log('JSON file not found, using default data');
+                    return false;
+                }
+            } catch (error) {
+                console.log('Error loading JSON file:', error);
+                return false;
+            }
+        }
+
+        // Function to load fallback data if JSON is not available
+        function loadFallbackData() {
+            quarterlyData = {
+                "2025-Q3": [
+                    {
+                        id: 1,
+                        name: "Ahmed El-Taher",
+                        job: "Organizer",
+                        points: 150,
+                        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: "https://github.com/ahmed-taher",
+                        linkedinUrl: "https://linkedin.com/in/ahmed-taher",
+                        achievements: ["organizer", "learner", "connector"],
+                        fellowship: "gold"
+                    },
+                    {
+                        id: 2,
+                        name: "Sara Mohamed",
+                        job: "QML Researcher",
+                        points: 120,
+                        profileImage: "https://images.unsplash.com/photo-1494790108755-2616b612b976?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: "https://github.com/sara-mohamed",
+                        linkedinUrl: null,
+                        achievements: ["learner", "innovator"],
+                        fellowship: "silver"
+                    },
+                    {
+                        id: 3,
+                        name: "Omar Hassan",
+                        job: "Student",
+                        points: 100,
+                        profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: null,
+                        linkedinUrl: "https://linkedin.com/in/omar-hassan",
+                        achievements: ["learner", "connector"],
+                        fellowship: "bronze"
+                    }
+                ],
+                "2025-Q4": [],
+                "2026-Q1": [],
+                "2026-Q2": []
+            };
+            
+            initializeQuarters();
+            createQuarterNavigation();
+            createQuarterSections();
+        }
+
+        function updateLastUpdateInfo() {
+            if (lastDataUpdate) {
+                const timeAgo = getTimeAgo(lastDataUpdate);
+                const updateInfo = document.querySelector('.last-update-info');
+                if (updateInfo) {
+                    updateInfo.textContent = `Last updated: ${timeAgo}`;
+                } else {
+                    // Add update info to footer
+                    const footer = document.querySelector('.footer');
+                    const updateDiv = document.createElement('div');
+                    updateDiv.className = 'last-update-info';
+                    updateDiv.style.cssText = 'margin-top: 10px; font-size: 0.9rem; opacity: 0.7;';
+                    updateDiv.textContent = `Last updated: ${timeAgo}`;
+                    footer.appendChild(updateDiv);
+                }
+            }
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+        }
+
+        async function loadData() {
+            // Try to load from JSON file first
+            const jsonLoaded = await loadDataFromJSON();
+            
+            if (!jsonLoaded) {
+                // Fall back to default data if JSON is not available
+                loadFallbackData();
+            }
+        }
+
+        // Auto-refresh every 60 seconds to check for updates
+        let refreshInterval;
+        
+        function startAutoRefresh() {
+            refreshInterval = setInterval(async () => {
+                await loadDataFromJSON();
+            }, 60000); // Check every minute
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        }
+
+        // Visibility API to pause refresh when tab is not visible
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+                // Immediate refresh when tab becomes visible
+                loadDataFromJSON();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            startAutoRefresh();
+        });
+    </script>
+</body>
+</html>

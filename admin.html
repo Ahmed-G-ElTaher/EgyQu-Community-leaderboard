@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Quantum Community Egypt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .header {
+            background: rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .header h1 {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #00ff88);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #b8c5ff;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .quarter-selector {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .quarter-selector h3 {
+            color: #00d4ff;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .quarter-select {
+            padding: 10px 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .quarter-select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .quarter-select option {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .panel h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #b8c5ff;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #b8c5ff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #533483, #764ba2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ff0040);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .members-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .member-item {
+            background: rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .member-item:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .member-details h4 {
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+        }
+
+        .member-details p {
+            color: #b8c5ff;
+            font-size: 0.9rem;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .points-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .points-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+            text-align: center;
+            background: rgba(0, 212, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 
+                0 5px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .action-card .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .action-card h3 {
+            color: #ffffff;
+            margin: 10px 0 5px 0;
+        }
+
+        .action-card p {
+            color: #b8c5ff;
+            margin: 0;
+        }
+
+        .achievements-container {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .achievements-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .achievement-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            margin-bottom: 5px;
+        }
+
+        .achievement-checkbox:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .achievement-checkbox input[type="checkbox"] {
+            width: auto;
+        }
+
+        .achievement-checkbox label,
+        .achievement-checkbox span {
+            color: #ffffff;
+        }
+
+        .custom-achievement-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: end;
+        }
+
+        .achievement-input-group {
+            flex: 1;
+        }
+
+        .achievement-input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(0, 212, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .member-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .member-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quarter-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔐 Admin Panel</h1>
+        <p>Quantum Computing Community Egypt - Member Management</p>
+        <div id="accessControl" style="margin-top: 15px; padding: 15px; background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 8px;">
+            <p style="color: #ff6b6b; margin: 0; font-size: 0.9rem;">
+                🚨 <strong>Restricted Access:</strong> This admin panel is only for authorized community organizers and GitHub repository contributors.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="quarter-selector">
+            <h3>Managing Quarter:</h3>
+            <select id="quarterSelect" class="quarter-select" onchange="switchQuarter()">
+                <!-- Options will be generated -->
+            </select>
+            <button class="btn btn-success btn-small" onclick="createNewQuarter()">Create New Quarter</button>
+        </div>
+
+        <!-- GitHub Configuration Panel -->
+        <div class="panel" style="margin-bottom: 30px;">
+            <h2>🔗 GitHub Integration Setup</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="githubOwner">GitHub Username/Org</label>
+                    <input type="text" id="githubOwner" placeholder="your-username" onchange="updateGitHubConfig()">
+                </div>
+                <div class="form-group">
+                    <label for="githubRepo">Repository Name</label>
+                    <input type="text" id="githubRepo" placeholder="quantum-leaderboard" onchange="updateGitHubConfig()">
+                </div>
+                <div class="form-group">
+                    <label for="githubToken">GitHub Token</label>
+                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" onchange="updateGitHubConfig()">
+                </div>
+                <div class="form-group">
+                    <label for="githubBranch">Branch</label>
+                    <input type="text" id="githubBranch" value="main" onchange="updateGitHubConfig()">
+                </div>
+            </div>
+            <div style="margin-top: 15px; padding: 15px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.3);">
+                <small style="color: #b8c5ff;">
+                    📝 <strong>Setup Instructions:</strong><br>
+                    1. Go to GitHub Settings → Developer settings → Personal access tokens<br>
+                    2. Create token with "repo" permissions<br>
+                    3. Enter your details above for auto-sync to repository
+                </small>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be generated -->
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="openAddMemberModal()">
+                <div class="icon">👤</div>
+                <h3>Add Member</h3>
+                <p>Add new community member</p>
+            </div>
+            <div class="action-card" onclick="exportDataManually()">
+                <div class="icon">📁</div>
+                <h3>Export JSON</h3>
+                <p>Download data file for website</p>
+            </div>
+            <div class="action-card" onclick="importDataFile()">
+                <div class="icon">📥</div>
+                <h3>Import JSON</h3>
+                <p>Load data from file</p>
+            </div>
+            <div class="action-card" onclick="bulkUpdatePoints()">
+                <div class="icon">📊</div>
+                <h3>Bulk Update</h3>
+                <p>Update multiple members</p>
+            </div>
+            <div class="action-card" onclick="resetQuarter()">
+                <div class="icon">🔄</div>
+                <h3>Reset Quarter</h3>
+                <p>Clear current quarter</p>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="panel">
+                <h2>Add New Member</h2>
+                <form id="addMemberForm">
+                    <div class="form-group">
+                        <label for="githubUsername">GitHub Username (Auto-fill)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="githubUsername" placeholder="github-username">
+                            <button type="button" class="btn btn-secondary btn-small" onclick="fetchGitHubData()">Fetch Data</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="memberName">Full Name</label>
+                        <input type="text" id="memberName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="memberJob">Job/Title</label>
+                        <input type="text" id="memberJob" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="memberImage">Profile Image URL</label>
+                        <input type="url" id="memberImage" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="memberGithub">GitHub Profile URL</label>
+                        <input type="url" id="memberGithub" placeholder="https://github.com/username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="memberLinkedin">LinkedIn Profile URL</label>
+                        <input type="url" id="memberLinkedin" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="memberPoints">Initial Points</label>
+                        <input type="number" id="memberPoints" value="0" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Achievements</label>
+                        <div class="achievements-container">
+                            <div class="achievements-selector" id="achievementsSelector">
+                                <!-- Achievements will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="custom-achievement-form">
+                            <div class="achievement-input-group">
+                                <input type="text" id="newAchievementName" placeholder="Achievement name">
+                            </div>
+                            <div class="achievement-input-group">
+                                <input type="text" id="newAchievementIcon" placeholder="📚" maxlength="2">
+                            </div>
+                            <button type="button" class="btn btn-success btn-small" onclick="addCustomAchievement()">Add Achievement</button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Add Member</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>Manage Achievements</h2>
+                <div class="achievements-container">
+                    <div id="achievementsList">
+                        <!-- Current achievements will be shown here -->
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="achievementName">Achievement Name</label>
+                    <input type="text" id="achievementName" placeholder="e.g., Community Builder">
+                </div>
+                <div class="form-group">
+                    <label for="achievementIcon">Achievement Icon</label>
+                    <input type="text" id="achievementIcon" placeholder="🏆" maxlength="2">
+                </div>
+                <button class="btn" onclick="addAchievement()">Add New Achievement</button>
+            </div>
+
+            <div class="panel">
+                <h2>Manage Members</h2>
+                <div class="members-list" id="membersList">
+                    <!-- Members will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // GitHub API configuration
+        let githubConfig = {
+            owner: '',
+            repo: '',
+            token: '',
+            branch: 'main'
+        };
+
+        // Data structure for quarterly data and achievements
+        let quarterlyData = {};
+        let achievementIcons = {
+            organizer: { icon: "🎯", title: "Event Organizer" },
+            learner: { icon: "📚", title: "Dedicated Learner" },
+            connector: { icon: "🤝", title: "Community Connector" },
+            innovator: { icon: "💡", title: "Innovation Catalyst" }
+        };
+        let currentQuarter = '2025-Q3'; // Set default to Q3 2025
+
+        function getCurrentQuarter() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            
+            // Default to Q3 2025 as the starting quarter
+            if (year < 2025 || (year === 2025 && month < 7)) {
+                return '2025-Q3';
+            }
+            
+            let quarter;
+            if (month <= 3) quarter = 'Q1';
+            else if (month <= 6) quarter = 'Q2';
+            else if (month <= 9) quarter = 'Q3';
+            else quarter = 'Q4';
+            
+            return `${year}-${quarter}`;
+        }
+
+        function generateQuarters() {
+            const quarters = [];
+            const currentYear = new Date().getFullYear();
+            
+            // Start from Q3 2025 and generate future quarters
+            quarters.push('2025-Q3', '2025-Q4');
+            
+            // Generate quarters for next 2 years
+            for (let year = currentYear + 1; year <= currentYear + 2; year++) {
+                quarters.push(`${year}-Q1`, `${year}-Q2`, `${year}-Q3`, `${year}-Q4`);
+            }
+            
+            return quarters;
+        }
+
+        function initializeQuarters() {
+            const quarters = generateQuarters();
+            
+            quarters.forEach(quarter => {
+                if (!quarterlyData[quarter]) {
+                    quarterlyData[quarter] = [];
+                }
+            });
+        }
+
+        // Load GitHub config from localStorage
+        function loadGitHubConfig() {
+            const saved = localStorage.getItem('github_config');
+            if (saved) {
+                githubConfig = {...githubConfig, ...JSON.parse(saved)};
+                updateGitHubConfigForm();
+            }
+        }
+
+        function saveGitHubConfig() {
+            localStorage.setItem('github_config', JSON.stringify(githubConfig));
+        }
+
+        function updateGitHubConfigForm() {
+            document.getElementById('githubOwner').value = githubConfig.owner || '';
+            document.getElementById('githubRepo').value = githubConfig.repo || '';
+            document.getElementById('githubToken').value = githubConfig.token || '';
+            document.getElementById('githubBranch').value = githubConfig.branch || 'main';
+        }
+
+        // Access control check
+        function checkAdminAccess() {
+            // Check if GitHub config is set (indicates authorized user)
+            const hasConfig = githubConfig.owner && githubConfig.repo && githubConfig.token;
+            
+            if (!hasConfig) {
+                showAccessWarning();
+            }
+        }
+
+        function showAccessWarning() {
+            const warning = document.createElement('div');
+            warning.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(10px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                color: white;
+                text-align: center;
+                padding: 20px;
+            `;
+            
+            warning.innerHTML = `
+                <div style="background: rgba(255, 107, 107, 0.1); border: 2px solid #ff6b6b; border-radius: 15px; padding: 40px; max-width: 500px;">
+                    <h2 style="color: #ff6b6b; margin-bottom: 20px;">🔒 Admin Access Required</h2>
+                    <p style="margin-bottom: 20px; color: #b8c5ff;">
+                        This admin panel is restricted to authorized community organizers only.
+                        <br><br>
+                        <strong>If you are an authorized admin:</strong>
+                        <br>Configure your GitHub integration settings below.
+                        <br><br>
+                        <strong>If you are a community member:</strong>
+                        <br>Please visit the public leaderboard instead.
+                    </p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: linear-gradient(45deg, #00d4ff, #ff00ff); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        I Understand
+                    </button>
+                    <br><br>
+                    <a href="index.html" style="color: #00d4ff; text-decoration: none;">← Go to Public Leaderboard</a>
+                </div>
+            `;
+            
+            document.body.appendChild(warning);
+        }
+
+        // Enhanced GitHub config validation
+        function validateGitHubAccess() {
+            if (!githubConfig.owner || !githubConfig.repo || !githubConfig.token) {
+                showNotification('Complete GitHub configuration required for admin access', 'error');
+                return false;
+            }
+            
+            // Test GitHub API access
+            testGitHubConnection();
+            return true;
+        }
+
+        async function testGitHubConnection() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`, {
+                    headers: {
+                        'Authorization': `Bearer ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const repoData = await response.json();
+                    if (repoData.permissions && (repoData.permissions.push || repoData.permissions.admin)) {
+                        showNotification('✅ Admin access verified - You have write permissions', 'success');
+                        return true;
+                    } else {
+                        showNotification('❌ Insufficient permissions - You need write access to this repository', 'error');
+                        return false;
+                    }
+                } else {
+                    showNotification('❌ Invalid GitHub configuration - Check your token and repository details', 'error');
+                    return false;
+                }
+            } catch (error) {
+                showNotification('❌ GitHub connection failed - Check your internet connection', 'error');
+                return false;
+            }
+        }
+
+        // Function to save data to GitHub repository
+        async function saveToGitHub(data) {
+            if (!githubConfig.owner || !githubConfig.repo || !githubConfig.token) {
+                showNotification('GitHub configuration required! Please set up GitHub API access.', 'error');
+                return false;
+            }
+
+            try {
+                const jsonContent = JSON.stringify(data, null, 2);
+                const encodedContent = btoa(unescape(encodeURIComponent(jsonContent)));
+                
+                // Get current file SHA (required for updates)
+                let sha = null;
+                try {
+                    const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/quantum-data.json`, {
+                        headers: {
+                            'Authorization': `Bearer ${githubConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (getResponse.ok) {
+                        const fileData = await getResponse.json();
+                        sha = fileData.sha;
+                    }
+                } catch (error) {
+                    console.log('File does not exist yet, will create new');
+                }
+
+                // Create or update the file
+                const updateData = {
+                    message: `Update quantum community data - ${new Date().toISOString()}`,
+                    content: encodedContent,
+                    branch: githubConfig.branch
+                };
+
+                if (sha) {
+                    updateData.sha = sha;
+                }
+
+                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/quantum-data.json`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    showNotification('Data saved to GitHub successfully! 🚀');
+                    return true;
+                } else {
+                    const error = await response.json();
+                    showNotification(`GitHub API Error: ${error.message}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                showNotification(`Error saving to GitHub: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Function to fetch GitHub user data
+        async function fetchGitHubUser(username) {
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    return {
+                        name: userData.name || userData.login,
+                        avatar: userData.avatar_url,
+                        profile: userData.html_url,
+                        bio: userData.bio
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching GitHub user:', error);
+                return null;
+            }
+        }
+
+        function generateDataFile(data) {
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            // Auto-download the file
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'quantum-data.json';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Enhanced save function
+        async function saveData() {
+            const dataToSave = {
+                lastUpdated: new Date().toISOString(),
+                quarters: quarterlyData,
+                achievements: achievementIcons,
+                currentQuarter: currentQuarter,
+                githubConfig: {
+                    owner: githubConfig.owner,
+                    repo: githubConfig.repo
+                }
+            };
+            
+            // Save to localStorage for admin persistence
+            localStorage.setItem('quantum_quarterly_data', JSON.stringify(quarterlyData));
+            localStorage.setItem('quantum_achievements', JSON.stringify(achievementIcons));
+            
+            // Try to save to GitHub first
+            const githubSuccess = await saveToGitHub(dataToSave);
+            
+            if (!githubSuccess) {
+                // Fallback to manual download
+                generateDataFile(dataToSave);
+                showNotification('Saved locally - GitHub sync failed. JSON file downloaded.', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateFellowship(member) {
+            if (member.points >= 200) {
+                member.fellowship = "gold";
+            } else if (member.points >= 120) {
+                member.fellowship = "silver";
+            } else if (member.points >= 50) {
+                member.fellowship = "bronze";
+            } else {
+                member.fellowship = "none";
+            }
+        }
+
+        function updateGitHubConfig() {
+            githubConfig.owner = document.getElementById('githubOwner').value;
+            githubConfig.repo = document.getElementById('githubRepo').value;
+            githubConfig.token = document.getElementById('githubToken').value;
+            githubConfig.branch = document.getElementById('githubBranch').value;
+            saveGitHubConfig();
+            
+            // Validate access when config is updated
+            if (githubConfig.owner && githubConfig.repo && githubConfig.token) {
+                validateGitHubAccess();
+            }
+        }
+
+        async function fetchGitHubData() {
+            const username = document.getElementById('githubUsername').value.trim();
+            if (!username) {
+                showNotification('Please enter a GitHub username', 'error');
+                return;
+            }
+
+            showNotification('Fetching GitHub data...');
+            
+            const userData = await fetchGitHubUser(username);
+            if (userData) {
+                document.getElementById('memberName').value = userData.name;
+                document.getElementById('memberImage').value = userData.avatar;
+                document.getElementById('memberGithub').value = userData.profile;
+                
+                if (userData.bio) {
+                    document.getElementById('memberJob').value = userData.bio;
+                }
+                
+                showNotification('GitHub data loaded successfully!');
+            } else {
+                showNotification('GitHub user not found', 'error');
+            }
+        }
+
+        function updateMemberPoints(memberId, change) {
+            const members = quarterlyData[currentQuarter] || [];
+            const member = members.find(m => m.id === memberId);
+            if (member) {
+                member.points = Math.max(0, member.points + change);
+                updateFellowship(member);
+                loadMembersList();
+                loadStats();
+                showNotification(`Updated ${member.name}'s points to ${member.points}`);
+                saveData(); // This will auto-save to GitHub
+            }
+        }
+
+        function setMemberPoints(memberId, newPoints) {
+            const members = quarterlyData[currentQuarter] || [];
+            const member = members.find(m => m.id === memberId);
+            if (member) {
+                member.points = Math.max(0, parseInt(newPoints) || 0);
+                updateFellowship(member);
+                loadMembersList();
+                loadStats();
+                showNotification(`Set ${member.name}'s points to ${member.points}`);
+                saveData(); // This will auto-save to GitHub
+            }
+        }
+
+        function deleteMember(memberId) {
+            if (confirm('Are you sure you want to delete this member?')) {
+                quarterlyData[currentQuarter] = quarterlyData[currentQuarter].filter(m => m.id !== memberId);
+                loadMembersList();
+                loadStats();
+                showNotification('Member deleted successfully');
+                saveData(); // This will auto-save to GitHub
+            }
+        }
+
+        function loadQuarterSelector() {
+            const select = document.getElementById('quarterSelect');
+            const quarters = Object.keys(quarterlyData).sort().reverse();
+            
+            select.innerHTML = quarters.map(quarter => 
+                `<option value="${quarter}" ${quarter === currentQuarter ? 'selected' : ''}>${quarter}</option>`
+            ).join('');
+        }
+
+        function switchQuarter() {
+            currentQuarter = document.getElementById('quarterSelect').value;
+            loadMembersList();
+            loadStats();
+        }
+
+        function createNewQuarter() {
+            const year = prompt('Enter year (e.g., 2025):');
+            const quarter = prompt('Enter quarter (Q1, Q2, Q3, or Q4):');
+            
+            if (year && quarter && ['Q1', 'Q2', 'Q3', 'Q4'].includes(quarter.toUpperCase())) {
+                const newQuarter = `${year}-${quarter.toUpperCase()}`;
+                if (!quarterlyData[newQuarter]) {
+                    quarterlyData[newQuarter] = [];
+                    currentQuarter = newQuarter;
+                    loadQuarterSelector();
+                    loadMembersList();
+                    loadStats();
+                    showNotification(`Created new quarter: ${newQuarter}`);
+                    saveData();
+                } else {
+                    showNotification('Quarter already exists!', 'error');
+                }
+            } else {
+                showNotification('Invalid quarter format!', 'error');
+            }
+        }
+
+        function loadStats() {
+            const members = quarterlyData[currentQuarter] || [];
+            const totalMembers = members.length;
+            const totalPoints = members.reduce((sum, member) => sum + member.points, 0);
+            const avgPoints = totalMembers > 0 ? Math.round(totalPoints / totalMembers) : 0;
+            const goldFellows = members.filter(m => m.fellowship === 'gold').length;
+            const silverFellows = members.filter(m => m.fellowship === 'silver').length;
+            const bronzeFellows = members.filter(m => m.fellowship === 'bronze').length;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalMembers}</div>
+                    <div class="stat-label">Total Members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalPoints}</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgPoints}</div>
+                    <div class="stat-label">Avg Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${goldFellows}</div>
+                    <div class="stat-label">Gold Fellows</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${silverFellows}</div>
+                    <div class="stat-label">Silver Fellows</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${bronzeFellows}</div>
+                    <div class="stat-label">Bronze Fellows</div>
+                </div>
+            `;
+        }
+
+        function loadMembersList() {
+            const membersList = document.getElementById('membersList');
+            const members = quarterlyData[currentQuarter] || [];
+            const sortedMembers = [...members].sort((a, b) => b.points - a.points);
+            
+            if (sortedMembers.length === 0) {
+                membersList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No members in this quarter yet.</p>';
+                return;
+            }
+            
+            membersList.innerHTML = sortedMembers.map(member => `
+                <div class="member-item">
+                    <div class="member-info">
+                        <img src="${member.profileImage}" alt="${member.name}" class="member-avatar">
+                        <div class="member-details">
+                            <h4>${member.name}</h4>
+                            <p>${member.job} • ${member.points} points • ${member.fellowship} fellow</p>
+                        </div>
+                    </div>
+                    <div class="member-actions">
+                        <div class="points-controls">
+                            <button class="btn btn-small" onclick="updateMemberPoints(${member.id}, -10)">-10</button>
+                            <button class="btn btn-small" onclick="updateMemberPoints(${member.id}, -5)">-5</button>
+                            <input type="number" class="points-input" value="${member.points}" 
+                                   onchange="setMemberPoints(${member.id}, this.value)">
+                            <button class="btn btn-small" onclick="updateMemberPoints(${member.id}, 5)">+5</button>
+                            <button class="btn btn-small" onclick="updateMemberPoints(${member.id}, 10)">+10</button>
+                        </div>
+                        <button class="btn btn-danger btn-small" onclick="deleteMember(${member.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadAchievements() {
+            const achievementsSelector = document.getElementById('achievementsSelector');
+            const achievementsList = document.getElementById('achievementsList');
+            
+            // Load achievement checkboxes for member form
+            achievementsSelector.innerHTML = Object.keys(achievementIcons).map(key => {
+                const achievement = achievementIcons[key];
+                return `
+                    <div class="achievement-checkbox">
+                        <input type="checkbox" id="achievement_${key}" value="${key}">
+                        <label for="achievement_${key}">${achievement.icon} ${achievement.title}</label>
+                    </div>
+                `;
+            }).join('');
+
+            // Load achievements management list
+            achievementsList.innerHTML = Object.keys(achievementIcons).map(key => {
+                const achievement = achievementIcons[key];
+                return `
+                    <div class="achievement-checkbox">
+                        <span>${achievement.icon} ${achievement.title}</span>
+                        <button class="btn btn-danger btn-small" style="margin-left: auto;" onclick="removeAchievement('${key}')">Remove</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addAchievement() {
+            const name = document.getElementById('achievementName').value.trim();
+            const icon = document.getElementById('achievementIcon').value.trim();
+            
+            if (!name || !icon) {
+                showNotification('Please enter both name and icon', 'error');
+                return;
+            }
+            
+            const key = name.toLowerCase().replace(/\s+/g, '_');
+            if (achievementIcons[key]) {
+                showNotification('Achievement already exists!', 'error');
+                return;
+            }
+            
+            achievementIcons[key] = { icon, title: name };
+            loadAchievements();
+            
+            // Clear form
+            document.getElementById('achievementName').value = '';
+            document.getElementById('achievementIcon').value = '';
+            
+            showNotification(`Added achievement: ${name}`);
+            saveData(); // This will auto-save to GitHub
+        }
+
+        function addCustomAchievement() {
+            const name = document.getElementById('newAchievementName').value.trim();
+            const icon = document.getElementById('newAchievementIcon').value.trim();
+            
+            if (!name || !icon) {
+                showNotification('Please enter both name and icon', 'error');
+                return;
+            }
+            
+            const key = name.toLowerCase().replace(/\s+/g, '_');
+            if (achievementIcons[key]) {
+                showNotification('Achievement already exists!', 'error');
+                return;
+            }
+            
+            achievementIcons[key] = { icon, title: name };
+            loadAchievements();
+            
+            // Clear form
+            document.getElementById('newAchievementName').value = '';
+            document.getElementById('newAchievementIcon').value = '';
+            
+            showNotification(`Added achievement: ${name}`);
+            saveData();
+        }
+
+        function removeAchievement(key) {
+            if (confirm(`Are you sure you want to remove the "${achievementIcons[key].title}" achievement?`)) {
+                delete achievementIcons[key];
+                loadAchievements();
+                showNotification('Achievement removed');
+                saveData();
+            }
+        }
+
+        function addMember(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('memberName').value;
+            const job = document.getElementById('memberJob').value;
+            const image = document.getElementById('memberImage').value || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face';
+            const github = document.getElementById('memberGithub').value;
+            const linkedin = document.getElementById('memberLinkedin').value;
+            const points = parseInt(document.getElementById('memberPoints').value) || 0;
+            
+            const achievements = [];
+            document.querySelectorAll('.achievements-selector input[type="checkbox"]:checked').forEach(checkbox => {
+                achievements.push(checkbox.value);
+            });
+            
+            const newMember = {
+                id: Date.now(),
+                name,
+                job,
+                points,
+                profileImage: image,
+                githubUrl: github || null,
+                linkedinUrl: linkedin || null,
+                achievements,
+                fellowship: "none"
+            };
+            
+            updateFellowship(newMember);
+            
+            if (!quarterlyData[currentQuarter]) {
+                quarterlyData[currentQuarter] = [];
+            }
+            quarterlyData[currentQuarter].push(newMember);
+            
+            // Reset form
+            document.getElementById('addMemberForm').reset();
+            
+            loadMembersList();
+            loadStats();
+            showNotification(`Added ${name} to ${currentQuarter}!`);
+            saveData(); // This will auto-save to GitHub
+        }
+
+        function bulkUpdatePoints() {
+            const points = prompt('Enter points to add to all members in current quarter:');
+            if (points && !isNaN(points)) {
+                const pointsNum = parseInt(points);
+                const members = quarterlyData[currentQuarter] || [];
+                members.forEach(member => {
+                    member.points = Math.max(0, member.points + pointsNum);
+                    updateFellowship(member);
+                });
+                loadMembersList();
+                loadStats();
+                showNotification(`Added ${pointsNum} points to all members in ${currentQuarter}`);
+                saveData();
+            }
+        }
+
+        function exportDataManually() {
+            const dataToExport = {
+                lastUpdated: new Date().toISOString(),
+                quarters: quarterlyData,
+                achievements: achievementIcons,
+                currentQuarter: currentQuarter
+            };
+            
+            generateDataFile(dataToExport);
+            showNotification('JSON data file exported successfully!');
+        }
+
+        function importDataFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.quarters && data.achievements) {
+                                quarterlyData = data.quarters;
+                                achievementIcons = data.achievements;
+                                if (data.currentQuarter) {
+                                    currentQuarter = data.currentQuarter;
+                                }
+                                
+                                loadQuarterSelector();
+                                loadAchievements();
+                                loadMembersList();
+                                loadStats();
+                                saveData();
+                                
+                                showNotification('Data imported successfully!');
+                            } else {
+                                showNotification('Invalid JSON file format!', 'error');
+                            }
+                        } catch (error) {
+                            showNotification('Error reading JSON file!', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function resetQuarter() {
+            if (confirm(`Are you sure you want to reset all data for ${currentQuarter}? This cannot be undone.`)) {
+                quarterlyData[currentQuarter] = [];
+                loadMembersList();
+                loadStats();
+                showNotification(`Reset ${currentQuarter} successfully!`);
+                saveData();
+            }
+        }
+
+        function openAddMemberModal() {
+            document.getElementById('memberName').focus();
+        }
+
+        function loadData() {
+            // Load quarterly data
+            const savedQuarterlyData = localStorage.getItem('quantum_quarterly_data');
+            if (savedQuarterlyData) {
+                quarterlyData = JSON.parse(savedQuarterlyData);
+            }
+
+            // Load achievements
+            const savedAchievements = localStorage.getItem('quantum_achievements');
+            if (savedAchievements) {
+                Object.assign(achievementIcons, JSON.parse(savedAchievements));
+            }
+
+            // Initialize quarters
+            initializeQuarters();
+
+            // Sample data for current quarter if empty
+            if (!quarterlyData[currentQuarter] || quarterlyData[currentQuarter].length === 0) {
+                quarterlyData[currentQuarter] = [
+                    {
+                        id: 1,
+                        name: "Ahmed El-Taher",
+                        job: "Organizer",
+                        points: 150,
+                        profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: "https://github.com/ahmed-taher",
+                        linkedinUrl: "https://linkedin.com/in/ahmed-taher",
+                        achievements: ["organizer", "learner", "connector"],
+                        fellowship: "gold"
+                    },
+                    {
+                        id: 2,
+                        name: "Sara Mohamed",
+                        job: "QML Researcher",
+                        points: 120,
+                        profileImage: "https://images.unsplash.com/photo-1494790108755-2616b612b976?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: "https://github.com/sara-mohamed",
+                        linkedinUrl: null,
+                        achievements: ["learner", "innovator"],
+                        fellowship: "silver"
+                    },
+                    {
+                        id: 3,
+                        name: "Omar Hassan",
+                        job: "Student",
+                        points: 100,
+                        profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                        githubUrl: null,
+                        linkedinUrl: "https://linkedin.com/in/omar-hassan",
+                        achievements: ["learner", "connector"],
+                        fellowship: "bronze"
+                    }
+                ];
+            }
+
+            loadQuarterSelector();
+            loadAchievements();
+            loadMembersList();
+            loadStats();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAdminAccess(); // Check admin access on load
+            loadGitHubConfig(); // Load GitHub settings
+            loadData();
+            document.getElementById('addMemberForm').addEventListener('submit', addMember);
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(saveData, 30000);
+    </script>
+</body>
+</html>
