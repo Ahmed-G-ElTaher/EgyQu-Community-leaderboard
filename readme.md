@@ -4,6 +4,9 @@
 
 Welcome to our vibrant quantum computing community! This leaderboard celebrates the amazing contributions of our members who are actively building Egypt's quantum future through learning, organizing, connecting, and innovating.
 
+> ### [View Current Rankings](https://ahmed-g-eltaher.github.io/EgyQu-Community-leaderboard/)
+
+
 ## 🌟 **Why We Created This System**
 
 ### **🎯 Our Mission**
@@ -204,7 +207,7 @@ This leaderboard is built with modern web technologies and features:
 - **Automated data synchronization**
 
 ### **📱 Access the System**
-- **Public Leaderboard**: [View Current Rankings](./index.html)
+- **Public Leaderboard**: [View Current Rankings](https://ahmed-g-eltaher.github.io/EgyQu-Community-leaderboard/)
 - **Admin Panel**: For authorized organizers only
 
 ### **🔧 Features**
